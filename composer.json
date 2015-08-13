@@ -1,0 +1,15 @@
+{
+  "name": "cinnamonlab/react",
+  "require": {
+    "php": ">=5.5.9",
+    "cinnamonlab/framework":"dev-master",
+    "react/react": "^0.4.1",
+    "predis/predis-async":"dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Framework\\React\\": "src/Framework/React/"
+    }
+  },
+  "minimum-stability": "dev"
+}
