@@ -1,15 +1,26 @@
 {
-  "name": "cinnamonlab/react",
-  "require": {
-    "php": ">=5.5.9",
-    "cinnamonlab/framework":"dev-master",
-    "react/react": "^0.4.1",
-    "predis/predis-async":"dev-master"
-  },
-  "autoload": {
-    "psr-4": {
-      "Framework\\React\\": "src/Framework/React/"
+    "name": "cinnamonlab/react",
+    "description": "The Simple Framework.",
+    "type": "library",
+    "keywords": ["framework"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hajime Hotta",
+            "email": "hotta@fastbid.asia",
+            "role": "Developer"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.0",
+        "predis/predis-async": "dev-master",
+        "react/react": "0.4.*",
+        "cinnamonlab/framework": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Framework\\React\\": "src/Framework/React/"
+        }
     }
-  },
-  "minimum-stability": "dev"
 }
