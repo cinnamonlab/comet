@@ -8,5 +8,4 @@ date_default_timezone_set('UTC');
 
 include __APP__ . "/comet.php";
 
-
 Comet::getInstance()->run();
