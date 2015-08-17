@@ -90,20 +90,24 @@ class Comet
 
         if ( ! $this->checkTrigger($trigger, $pub) ) return false;
         $f = $this->findReceiverFunction($trigger);
-        $rs = $f(json_decode($pub), $request, $response);
 
-
-        if ( is_array($rs) ) {
-            $response->writeHead(200, array("Content-type", "application/json"));
-            $response->end(json_encode($rs));
-        }
-        if ( is_string($rs) ) {
-            $response->writeHead(200, array("Content-type", "text/html"));
-            $response->end( $rs );
-        }
-        if ( $rs instanceof \Framework\Response ) {
-            $response->writeHead($rs->getCode(), $this->getHeadersArray($rs));
-            $response->end($rs->getContent());
+        try {
+            $rs = $f(json_decode($pub), $request, $response);
+            if ( is_array($rs) ) {
+                $response->writeHead(200, array("Content-type", "application/json"));
+                $response->end(json_encode($rs));
+            }
+            if ( is_string($rs) ) {
+                $response->writeHead(200, array("Content-type", "text/html"));
+                $response->end( $rs );
+            }
+            if ( $rs instanceof \Framework\Response ) {
+                $response->writeHead($rs->getCode(), $this->getHeadersArray($rs));
+                $response->end($rs->getContent());
+            }
+        } catch ( \Exception $e ) {
+            //Mostly assumed that the header is closed already
+            return false;
         }
         return true;
     }
@@ -121,7 +125,6 @@ class Comet
 
     public function checkTrigger( $trigger, $pub ) {
 
-        Comet::log( "check trigger " . Comet::getPreg($trigger) . " with pub $pub" );
         $pub_array = json_decode($pub);
 
         if ( json_last_error() == JSON_ERROR_NONE ) {
@@ -175,13 +178,15 @@ class Comet
                 $response = $receiver[2];
                 $time = $receiver[3];
 
-                if ( $time < date("U") + Config::get('comet.timeout', 30) ) {
+                if ( $time < date("U") - Config::get('comet.timeout', 30) ) {
                     try {
                         $response->writeHead(408, array("Content-type"=>"text/html"));
                         $response->end("Request Timeout");
-                    } catch ( \Exception $e ) { Comet::log($e->getMessage()); }
+
+                    } catch ( \Exception $e ) { }
+                    Comet::getInstance()->removeReceivers($key);
+
                 }
-                Comet::getInstance()->removeReceivers($key);
             }
         });
 
@@ -201,12 +206,9 @@ class Comet
 
                     $payload = $event->payload;
 
-                    Comet::log("trigger with $payload");
-
                     $receivers = Comet::getInstance()->getReceivers();
                     foreach( $receivers as $receiver) {
                         $trigger = $receiver[0];
-                        Comet::log("....think of $trigger");
                         $request = $receiver[1];
                         $response = $receiver[2];
                         Comet::proceedReceiverFunction($payload, $trigger, $request, $response);
@@ -220,12 +222,7 @@ class Comet
             $received = false;
             $result = null;
 
-            Comet::log("request coming..." . $request->getPath());
-
             foreach( $this->controllers as $method => $controllers ) {
-
-
-
                 foreach ($controllers as $uri => $controller) {
                     //TODO: Richer URI controller can be implemented
                     if (!preg_match("/^\//", $uri)) $uri = "/" . $uri;

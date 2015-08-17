@@ -14,6 +14,30 @@ $c->get('hello', function(&$request, &$response){
     return (new Response())->setContent('hello guest');
 });
 
+$c->get('index', function(&$request, &$response){
+
+    Return \Framework\Blade\View::make("index");
+
+});
+
+$c->get('chat', function(&$request, &$response){
+
+    $parameters = $request->getQuery();
+
+    if ( ! isset($parameters['name']))
+        return (new Response())->setCode(404)->setContent("name not found");
+
+    if ( ! isset($parameters['name']))
+        $to = "guest";
+    else $to = $parameters['to'];
+
+    Return \Framework\Blade\View::make("chat")
+        ->with('name', $parameters['name'])
+        ->with('to', $to);
+
+});
+
+
 $c->get('listen', function(&$request, &$response) {
     //TODO: Authentication if needed
 
@@ -51,11 +75,10 @@ $c->get('talk', function(&$request, &$response) {
         "from" => $my_name,
         "message" => $message
     ));
-
-    return new Receiver("name:$my_name");
+    return Response::json(array("status"=>"success"));
 });
 
 $c->receive('/^name:/', function($data, &$request, &$response){
-    return (new Response())->setContent(print_r($data, true));
+    return Response::json($data);
 });
 

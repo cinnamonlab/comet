@@ -17,7 +17,8 @@
         "predis/predis-async": "dev-master",
         "react/react": "0.4.*",
         "cinnamonlab/framework": "dev-master",
-        "cinnamonlab/redis": "dev-master"
+        "cinnamonlab/redis": "dev-master",
+        "cinnamonlab/blade": "dev-master"
     },
     "autoload": {
         "psr-4": {
