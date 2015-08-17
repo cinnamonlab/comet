@@ -16,11 +16,12 @@
         "php": ">=5.3.0",
         "predis/predis-async": "dev-master",
         "react/react": "0.4.*",
-        "cinnamonlab/framework": "dev-master"
+        "cinnamonlab/framework": "dev-master",
+        "cinnamonlab/redis": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Framework\\React\\": "src/Framework/React/"
+            "Framework\\Comet\\": "src/Framework/Comet/"
         }
     }
 }
